@@ -6,8 +6,11 @@
 
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.ensemble import RandomForestRegressor
 from sklearn import metrics
 
 
@@ -73,6 +76,22 @@ metrics_df = pd.DataFrame({'Metric' : ["Mean Absolute error", "Mean Squared erro
                                      metrics.mean_squared_error(Y_test, predictions),
                                      np.sqrt(metrics.mean_squared_error(Y_test, predictions))]})
 metrics_df
+
+
+# In[10]:
+
+
+rf_model = RandomForestRegressor(n_estimators = 100,random_state = 42)
+rf_model.fit(X_train,Y_train)
+print('Mean absolute error for RF model: %0.4f' %metrics.mean_absolute_error(Y_test,rf_model.predict(X_test)))
+
+
+# In[11]:
+
+
+feature_importance = pd.DataFrame(sorted(zip(rf_model.feature_importances_, X.columns)), columns = ['Value','Feature']) 
+plt.figure(figsize = (10, 6)) 
+sns.barplot(x = "Value", y="Feature", data = feature_importance.sort_values(by = "Value", ascending = False)) 
 
 
 # In[ ]:
